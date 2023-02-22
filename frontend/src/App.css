@@ -1,0 +1,600 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* First one */
+    --input-color: #ffffff;
+    --primary-color: #9c4949;
+    --secondary-color: #bf7950;
+    --details-color: #974413;
+    --button-color: #6a3559;
+    --trackCard-color: #bf7950;
+
+    --logo-font: "Monofett", sans-serif;
+    --primary-font: "Nunito", sans-serif;
+    --secondary-font: "Ubuntu", sans-serif;
+    --comic-contour: 1px 3px 3px 1px;
+    --input-width: 500px;
+}
+
+body {
+    background-color: var(--primary-color);
+    font-family: var(--primary-font);
+    color: white;
+}
+
+/* 
+  Navigation bar
+  */
+
+nav {
+    display: flex;
+    flex-direction: column;
+    padding: 7px 0;
+    background-color: var(--secondary-color);
+    border-bottom: 4px solid black;
+    font-size: 14px;
+}
+
+.nav-titleBar {
+    display: inline-flex;
+}
+
+.toggle {
+    display: flex;
+    order: 1;
+    font-size: 20px;
+    align-self: center;
+    margin-right: 15px;
+}
+
+.nav-logo-link {
+    display: flex;
+    margin-right: auto;
+    text-decoration: none;
+    color: inherit;
+    align-items: center;
+}
+
+.nav-logo-img {
+    margin: 0 0.6rem;
+}
+
+.nav-logo-text {
+    display: inline-flex;
+    font-family: var(--logo-font);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 29px;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+.menu,
+.submenu {
+    list-style-type: none;
+}
+
+.nav-item {
+    padding: 5px 10px;
+}
+
+.nav-item.button {
+    padding: 9px 5px;
+}
+
+.menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 800;
+    max-height: 40vh;
+    overflow-y: scroll;
+}
+
+.menu:hover {
+    overflow-x: hidden;
+}
+
+.menu::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+    background-color: transparent;
+    /* or add it to the track */
+}
+
+.menu::-webkit-scrollbar-thumb {
+    background: rgb(56, 56, 56);
+    border-radius: 8px;
+}
+
+.menu.active {
+    margin-top: 10px;
+}
+
+.menu.active .nav-item {
+    animation-duration: 0.5s;
+    animation-name: slidein;
+}
+
+.menu .nav-item:hover {
+    transform: scale(1.1) translateX(-10px);
+    transition: 0.3s;
+}
+
+.menu.active .nav-item:hover {
+    transform: scale(1.1);
+    transition: 0.3s;
+}
+
+.menu li #btn-spotify {
+    padding: 10px 20px;
+}
+
+@keyframes slidein {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}
+
+@keyframes slideout {
+    from {
+        transform: translateY(0%);
+    }
+
+    to {
+        transform: translateY(-100%);
+    }
+}
+
+.menu li a {
+    display: block;
+    padding: 15px 5px;
+}
+
+.nav-item {
+    order: 3;
+    width: 100%;
+    text-align: center;
+    display: none;
+}
+
+.active .nav-item {
+    display: block;
+}
+
+.toggle img {
+    cursor: pointer;
+    height: 20px;
+}
+
+/* 
+			Main section
+  */
+
+main {
+    margin: auto 0;
+    margin-top: 2rem;
+}
+
+.use-description {
+    box-sizing: border-box;
+    margin: 25px 10vw;
+    text-align: center;
+}
+
+/* 
+			Form
+  */
+
+form.border-comic {
+    margin: 0 auto;
+    max-width: min(80vw, var(--input-width));
+    min-width: 245px;
+    display: flex;
+    flex-direction: column;
+}
+
+form p {
+    text-align: center;
+}
+
+.border-comic input, .border-comic select, .border-comic textarea {
+    margin: 0 auto;
+    width: 100%;
+    height: 1.5rem;
+    background: var(--input-color);
+    border-width: var(--comic-contour);
+    border-style: solid;
+    border-color: #000000;
+    border-radius: 5px;
+    font-family: var(--secondary-font);
+    transition: 0.5s;
+}
+
+.border-comic select {
+    height: 38px;
+}
+
+.row-container {
+    display: flex;
+    margin-bottom: 0.75rem;
+}
+
+.row-container span {
+    flex: 0.2;
+    font-weight: bold;
+    text-align: center;
+    align-self: center;
+}
+
+.border-comic input[type="date"] {
+    flex: 1;
+}
+
+.border-comic > input:focus {
+    border: solid #868686;
+}
+
+.border-comic > p {
+    font-size: 16px;
+    font-weight: bolder;
+    margin-bottom: 0.3rem;
+}
+
+.border-comic > label {
+    font-size: 12px;
+}
+
+input {
+    font-family: var(--primary-font), sans-serif;
+    padding: 5px;
+    margin-left: 5px;
+}
+
+#page-num {
+    width: calc(input);
+}
+
+.search-results {
+    width: min(80vw, var(--input-width));
+    margin: 0 auto;
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: 0.5rem;
+    min-width: 245px;
+    /* width: min(80vw, var(--input-width)); */
+    font-size: 14px;
+}
+
+button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 1.5rem;
+    width: 100%;
+    padding: 1rem 0;
+    cursor: pointer;
+
+    background: var(--button-color);
+    color: white;
+    font-size: 16px;
+    font: var(--primary-font);
+
+    border-width: var(--comic-contour);
+    border-style: solid;
+    border-color: #000000;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+button#search,
+button#submit-playlist {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 1.5rem;
+    padding: 1rem 5rem;
+    margin: 25px 0 0 0;
+    color: white;
+    font-weight: bolder;
+    font-size: 16px;
+
+    border-width: var(--comic-contour);
+    border-style: solid;
+    border-color: #000000;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+
+    cursor: pointer;
+}
+
+.spotify-login {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+    justify-content: flex-end;
+    float: right;
+}
+
+@media screen and (max-width: 490px) {
+    button {
+        height: 3rem;
+    }
+}
+
+.nav-btn-spotify {
+    margin: 5px;
+    height: 40px;
+}
+
+.nav-btn-spotify img {
+    height: 24px;
+    position: relative;
+    translate: -25% 25%;
+}
+
+.btn-spotify {
+    width: fit-content;
+    margin: 15px auto;
+
+    background: #1db954;
+    color: white;
+    font-weight: bolder;
+    font-size: 15px;
+
+    border-width: var(--comic-contour);
+    border-style: solid;
+    border-color: #000000;
+    border-radius: 27px;
+    margin-bottom: 1rem;
+
+    height: 50px;
+    width: 170px;
+
+    text-decoration: none;
+}
+
+.btn-spotify img {
+    height: 20px;
+    position: relative;
+    translate: -25% 0;
+}
+
+.search-results {
+    margin-bottom: 2rem;
+    max-width: min(80vw, var(--input-width));
+}
+
+#playlist-submit-form {
+    box-sizing: border-box;
+    padding: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: #000000 solid;
+    border-width: var(--comic-contour);
+    border-radius: 15px;
+}
+
+/* Scroll Buttons */
+
+.buttonsScroll-container {
+    display: block;
+    position: fixed;
+    top: 45vh;
+    right: 0;
+    opacity: 0.4;
+}
+
+.buttonsScroll-container:hover {
+    display: block;
+    position: fixed;
+    top: 45vh;
+    right: 0;
+    opacity: 1;
+    -webkit-transition: 0.4s;
+}
+
+.buttonsScroll-container > * {
+    background-color: var(--button-color);
+    padding: 5px;
+    height: 60px;
+    width: fit-content;
+    opacity: 0.5;
+}
+
+.buttonsScroll-container > *:hover {
+    padding: 5px;
+    height: 60px;
+    width: fit-content;
+    -webkit-transition: 0.2s;
+    opacity: 1;
+}
+
+.buttonsScroll-container img {
+    height: 15px;
+}
+
+.Track-Container {
+    background-color: var(--trackCard-color) !important;
+}
+
+.highlighted {
+    background-color: var(--details-color) !important;
+}
+
+.Track-Checkbox:checked + label::before {
+    border-color: var(--details-color) !important;
+    background-color: var(--details-color) !important;
+}
+
+.loader {
+    border: 5px solid #f3f3f300;
+    border-top: 5px solid var(--button-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 3rem auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.TrackCard {
+    display: flex;
+    flex-direction: column;
+}
+
+.searchQuery {
+    display: block;
+
+    position: relative;
+    top: 25px;
+    left: 10%;
+
+    padding: 5px;
+    height: 30px;
+    width: fit-content;
+    z-index: -1;
+
+    border: solid black 1px;
+    border-radius: 15px;
+
+    font-size: 12px;
+    color: white;
+    background-color: var(--secondary-color);
+}
+
+.form-container {
+    margin-bottom: 2rem;
+}
+
+/* Desktop view */
+
+@media screen and (min-width: 768px) {
+    #root {
+        display: flex;
+        flex-direction: row;
+    }
+
+    li.toggle {
+        display: none;
+    }
+
+    nav {
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100vh;
+        width: 250px;
+        margin: 0;
+        border-right: #000000 solid 4px;
+        border-radius: 0 15px 15px 0;
+        overflow: hidden;
+    }
+
+    nav {
+        box-sizing: border-box;
+        position: fixed;
+        height: 100vh;
+        max-width: 240px;
+        padding-bottom: 0;
+    }
+
+    .menu {
+        margin-bottom: 0;
+        padding: 0;
+        max-height: 700px;
+        margin-top: 10rem;
+    }
+
+    .toggle {
+        display: none;
+    }
+
+    .menu .nav-item {
+        display: block;
+        text-align: right;
+    }
+
+    main {
+        display: flex;
+        max-width: min(80vw, var(--input-width));
+        flex-flow: column nowrap;
+        min-width: calc(100% - 240px);
+        justify-content: center;
+        margin-left: 240px;
+        /* width: 500px; */
+    }
+
+    form.border-comic {
+        width: min(80vw, var(--input-width));
+    }
+
+    .use-description {
+        box-sizing: border-box;
+        margin: 25px auto;
+        text-align: center;
+    }
+}
+
+.welcome-hero {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    justify-content: center;
+}
+
+@media screen and (max-width:480px) {
+    .welcome-hero {
+        height: 60vh;
+    }
+}
+
+.welcome-title {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.welcome-desc > h3 {
+    text-align: center;
+    font-family: var(--secondary-font);
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.welcome-user {
+    text-align: center;
+    font-family: var(--secondary-font);
+}
+
+.fwidth {
+    width: 100%;
+}
