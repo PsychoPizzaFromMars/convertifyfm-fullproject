@@ -71,3 +71,11 @@ def refresh_spotify_token(session_id):
     update_or_create_user_tokens(
         session_id, access_token, token_type, expires_in, refresh_token
     )
+
+
+def get_spotify_user(request):
+    user_session = request.session.session_key
+    if is_spotify_authenticated(user_session):
+        user = get_user_tokens(user_session)
+        return user
+    return None

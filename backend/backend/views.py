@@ -16,6 +16,30 @@ from decouple import config
 FRONTEND_URL = config("FRONTEND_URL")
 
 
+unauthorized_response = Response(
+    {
+        "error": {
+            "message": "User not logged in",
+            "status_code": status.HTTP_401_UNAUTHORIZED,
+        }
+    },
+    status=status.HTTP_401_UNAUTHORIZED,
+)
+
+
+def bad_request_response(error_details):
+    return Response(
+        {
+            "error": {
+                "message": "Invalid request",
+                "status_code": status.HTTP_400_BAD_REQUEST,
+                "details": error_details,
+            }
+        },
+        status=status.HTTP_400_BAD_REQUEST,
+    )
+
+
 @api_view(["POST"])
 def lastfm_get_top_tracks(request):
     serializer = LastfmTopTracksSerializer(data=request.data)
@@ -28,16 +52,7 @@ def lastfm_get_top_tracks(request):
         )
         if response:
             return Response(response)
-    return Response(
-        {
-            "error": {
-                "message": "Invalid request",
-                "status_code": status.HTTP_400_BAD_REQUEST,
-                "details": serializer.errors,
-            }
-        },
-        status=status.HTTP_400_BAD_REQUEST,
-    )
+    return bad_request_response(serializer.errors)
 
 
 @api_view(["POST"])
@@ -51,16 +66,7 @@ def lastfm_get_weekly_top_tracks(request):
             limit=serializer.data.get("limit"),
         )
         return Response(response)
-    return Response(
-        {
-            "error": {
-                "message": "Invalid request",
-                "status_code": status.HTTP_400_BAD_REQUEST,
-                "details": serializer.errors,
-            }
-        },
-        status=status.HTTP_400_BAD_REQUEST,
-    )
+    return bad_request_response(serializer.errors)
 
 
 @api_view(["GET"])
@@ -76,16 +82,7 @@ def spotify_callback(request):
     error = request.GET.get("error", "")
 
     if error:
-        return Response(
-            {
-                "error": {
-                    "message": "Something went wrong",
-                    "status": status.HTTP_400_BAD_REQUEST,
-                    "details": error,
-                }
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return bad_request_response(error)
 
     sp_tokens = Spotify_API.get_tokens(code)
     ut.update_or_create_user_tokens(
@@ -108,142 +105,69 @@ def is_authenticated(request):
 def spotify_logout(request):
     user_session = request.session.session_key
     if not request.session.exists(user_session):
-        return Response(
-            {
-                "error": {
-                    "message": "User not logged in",
-                    "status_code": status.HTTP_401_UNAUTHORIZED,
-                }
-            },
-            status=status.HTTP_401_UNAUTHORIZED,
-        )
+        return unauthorized_response
     user_deleted = ut.delete_user_tokens(user_session)
     if user_deleted:
         return Response({}, status=status.HTTP_204_NO_CONTENT)
     else:
-        return Response(
-            {
-                "error": {
-                    "message": "User not logged in",
-                    "status_code": status.HTTP_401_UNAUTHORIZED,
-                }
-            },
-            status=status.HTTP_401_UNAUTHORIZED,
-        )
+        return unauthorized_response
 
 
 @api_view(["GET"])
 def spotify_get_current_user(request):
-    user_session = request.session.session_key
-    if ut.is_spotify_authenticated(user_session):
-        user = ut.get_user_tokens(user_session)
-    else:
-        return Response(
-            {
-                "error": {
-                    "message": "User not logged in",
-                    "status_code": status.HTTP_401_UNAUTHORIZED,
-                }
-            },
-            status=status.HTTP_401_UNAUTHORIZED,
-        )
+    user = ut.get_spotify_user(request)
+    if not user:
+        return unauthorized_response
     response = Spotify_API.get_current_user(access_token=user.access_token)
     return Response(response, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
 def spotify_get_user_top_tracks(request):
-    user_session = request.session.session_key
-    if ut.is_spotify_authenticated(user_session):
-        user = ut.get_user_tokens(user_session)
-    else:
-        return Response(
-            {
-                "error": {
-                    "message": "Please sign in",
-                    "status_code": status.HTTP_401_UNAUTHORIZED,
-                    "details": "User is not authenticated",
-                }
-            },
-            status=status.HTTP_401_UNAUTHORIZED,
-        )
-
+    user = ut.get_spotify_user(request)
+    if not user:
+        return unauthorized_response
     serializer = SpotifyUserTopTracksSerializer(data=request.data)
     if not serializer.is_valid():
-        return Response(
-            {
-                "error": {
-                    "message": "Invalid request",
-                    "status_code": status.HTTP_400_BAD_REQUEST,
-                    "details": serializer.errors,
-                }
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return bad_request_response(serializer.errors)
 
-    tracklist_spotify = [{
-        "artist": ts["artists"][0]["name"],
-        "name": ts["name"],
-        "album_name": ts["album"]["name"],
-        "album_cover_320": ts["album"]["images"][1]["url"],
-        "album_cover_64": ts["album"]["images"][2]["url"],
-        "uri": ts["uri"],
-    } for ts in Spotify_API.get_users_top_tracks(
-        access_token=user.access_token,
-        time_range=serializer.data.get("time_range"),
-        limit=serializer.data.get("limit"),
-    )["items"]]
+    tracklist_spotify = [
+        {
+            "artist": ts["artists"][0]["name"],
+            "name": ts["name"],
+            "album_name": ts["album"]["name"],
+            "album_cover_320": ts["album"]["images"][1]["url"],
+            "album_cover_64": ts["album"]["images"][2]["url"],
+            "uri": ts["uri"],
+        }
+        for ts in Spotify_API.get_users_top_tracks(
+            access_token=user.access_token,
+            time_range=serializer.data.get("time_range"),
+            limit=serializer.data.get("limit"),
+        )["items"]
+    ]
 
     if not tracklist_spotify:
-        return Response(
-            {
-                "error": {
-                    "message": "Something went wrong",
-                    "status": status.HTTP_400_BAD_REQUEST,
-                }
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return bad_request_response("Something went wrong")
     return Response({"tracks": tracklist_spotify}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
 def spotify_search(request):
-    user_session = request.session.session_key
-    if ut.is_spotify_authenticated(user_session):
-        user = ut.get_user_tokens(user_session)
-    else:
-        return Response(
-            {
-                "error": {
-                    "message": "Please sign in",
-                    "status_code": status.HTTP_401_UNAUTHORIZED,
-                    "details": "User is not authenticated",
-                }
-            },
-            status=status.HTTP_401_UNAUTHORIZED,
-        )
-
+    user = ut.get_spotify_user(request)
+    if not user:
+        return unauthorized_response
     tracklist_raw = request.data.get("tracklist")
     if not tracklist_raw:
-        return Response(
-            {
-                "error": {
-                    "message": "Tracklist is empty",
-                    "status_code": status.HTTP_400_BAD_REQUEST,
-                    "details": "No tracks provided",
-                }
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return bad_request_response("No tracks provided")
     tracklist_spotify = list()
     tracklist_missing = list()
 
     for track in tracklist_raw:
         try:
-            ts = Spotify_API.search(access_token=user.access_token, query=track)["tracks"][
-                "items"
-            ][0]
+            ts = Spotify_API.search(access_token=user.access_token, query=track)[
+                "tracks"
+            ]["items"][0]
 
             tracklist_spotify.append(
                 {
@@ -266,32 +190,11 @@ def spotify_search(request):
 
 @api_view(["POST"])
 def spotify_create_playlist(request):
-    user_session = request.session.session_key
-    if ut.is_spotify_authenticated(user_session):
-        user = ut.get_user_tokens(user_session)
-    else:
-        return Response(
-            {
-                "error": {
-                    "message": "Please sign in",
-                    "status_code": status.HTTP_401_UNAUTHORIZED,
-                    "details": "User is not authenticated",
-                }
-            },
-            status=status.HTTP_401_UNAUTHORIZED,
-        )
-
+    user = ut.get_spotify_user(request)
+    if not user:
+        return unauthorized_response
     if not request.data.get("tracks"):
-        return Response(
-            {
-                "error": {
-                    "message": "Tracklist is empty",
-                    "status_code": status.HTTP_400_BAD_REQUEST,
-                    "details": "No tracks provided",
-                }
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+        return bad_request_response("No tracks provided")
 
     playlist = Spotify_API.create_playlist(
         access_token=user.access_token,
@@ -315,15 +218,9 @@ def spotify_create_playlist(request):
             {"message": "Tracks successful added to playlist"},
             status=status.HTTP_200_OK,
         )
-    return Response(
-        {
-            "error": {
-                "message": "Something went wrong",
-                "status": status.HTTP_400_BAD_REQUEST,
-                "details": response.get("error").get("message")
-                if response.get("error")
-                else "Details not provided",
-            }
-        },
-        status=status.HTTP_400_BAD_REQUEST,
+    error_details = (
+        response.get("error").get("message")
+        if response.get("error")
+        else "Details not provided"
     )
+    return bad_request_response(error_details)
