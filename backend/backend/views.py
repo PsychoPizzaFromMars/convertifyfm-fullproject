@@ -9,7 +9,7 @@ from .serializers import (
 )
 from .api import LastFM_API, Spotify_API
 from . import utils as ut
-from .services import arr_split
+from .helpers import arr_split
 from decouple import config
 
 
