@@ -4,9 +4,6 @@ from django.utils import timezone
 from datetime import timedelta
 
 
-BASE_URL = "https://api.spotify.com/v1/me/"
-
-
 def get_user_tokens(session_id):
     user_tokens = SpotifyToken.objects.filter(user=session_id)
     print(user_tokens)
@@ -65,8 +62,7 @@ def is_spotify_authenticated(session_id):
 
 def refresh_spotify_token(session_id):
     refresh_token = get_user_tokens(session_id).refresh_token
-    sp = Spotify_API()
-    response = sp.refresh_access_token(refresh_token)
+    response = Spotify_API.refresh_access_token(refresh_token)
 
     access_token = response.get("access_token")
     token_type = response.get("token_type")
