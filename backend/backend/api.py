@@ -35,12 +35,8 @@ class LastFM_API:
             "format": "json",
         }
 
-        response = get(cls.LASTFM_API_URL, params=params, headers=cls.headers).json()
-        toptracks_list = [
-            f"{elem['artist']['name']} - {elem['name']}"
-            for elem in response["toptracks"]["track"]
-        ]
-        return toptracks_list
+        response = get(cls.LASTFM_API_URL, params=params, headers=cls.headers)
+        return response.json()
 
     @classmethod
     def get_weekly_trackchart(
@@ -61,14 +57,8 @@ class LastFM_API:
             "api_key": cls.LASTFM_API_KEY,
             "format": "json",
         }
-        response = get(cls.LASTFM_API_URL, params=params, headers=cls.headers).json()
-        if "error" in response:
-            return []
-        tracklist = [
-            f"{elem['artist']['#text']} - {elem['name']}"
-            for elem in response["weeklytrackchart"]["track"]
-        ]
-        return tracklist
+        response = get(cls.LASTFM_API_URL, params=params, headers=cls.headers)
+        return response.json()
 
 
 class Spotify_API:
@@ -179,3 +169,5 @@ class Spotify_API:
             url, headers={"Authorization": f"Bearer {access_token}"}, params=params
         )
         return response.json()
+
+

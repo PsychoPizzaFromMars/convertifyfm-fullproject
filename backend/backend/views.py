@@ -9,7 +9,7 @@ from .serializers import (
 )
 from .api import LastFM_API, Spotify_API
 from . import utils as ut
-from .helpers import arr_split
+from .helpers import *
 from decouple import config
 
 
@@ -50,8 +50,10 @@ def lastfm_get_top_tracks(request):
             limit=serializer.data.get("limit"),
             page=serializer.data.get("page"),
         )
-        if response:
-            return Response(response)
+        if "error" in response:
+            return bad_request_response(response.get("message", "Details not provided"))
+        response = formatted_lastfm_top_tracks(response)
+        return Response(response)
     return bad_request_response(serializer.errors)
 
 
@@ -65,6 +67,9 @@ def lastfm_get_weekly_top_tracks(request):
             date_to=serializer.data.get("date_to"),
             limit=serializer.data.get("limit"),
         )
+        if "error" in response:
+            return bad_request_response(response.get("message", "Details not provided"))
+        response = formatted_lastfm_weekly_chart(response)
         return Response(response)
     return bad_request_response(serializer.errors)
 
@@ -127,24 +132,18 @@ def spotify_get_user_top_tracks(request):
     user = ut.get_spotify_user(request)
     if not user:
         return unauthorized_response
+
     serializer = SpotifyUserTopTracksSerializer(data=request.data)
     if not serializer.is_valid():
         return bad_request_response(serializer.errors)
 
     tracklist_spotify = [
-        {
-            "artist": ts["artists"][0]["name"],
-            "name": ts["name"],
-            "album_name": ts["album"]["name"],
-            "album_cover_320": ts["album"]["images"][1]["url"],
-            "album_cover_64": ts["album"]["images"][2]["url"],
-            "uri": ts["uri"],
-        }
-        for ts in Spotify_API.get_users_top_tracks(
+        formatted_spotify_track(track)
+        for track in Spotify_API.get_users_top_tracks(
             access_token=user.access_token,
             time_range=serializer.data.get("time_range"),
             limit=serializer.data.get("limit"),
-        )["items"]
+        ).get("items", [])
     ]
 
     if not tracklist_spotify:
@@ -157,33 +156,37 @@ def spotify_search(request):
     user = ut.get_spotify_user(request)
     if not user:
         return unauthorized_response
+
     tracklist_raw = request.data.get("tracklist")
+    limit = request.data.get("limit", 5)
     if not tracklist_raw:
         return bad_request_response("No tracks provided")
+
     tracklist_spotify = list()
     tracklist_missing = list()
 
-    for track in tracklist_raw:
-        try:
-            ts = Spotify_API.search(access_token=user.access_token, query=track)[
-                "tracks"
-            ]["items"][0]
-
-            tracklist_spotify.append(
-                {
-                    "artist": ts["artists"][0]["name"],
-                    "name": ts["name"],
-                    "album_name": ts["album"]["name"],
-                    "album_cover_320": ts["album"]["images"][1]["url"],
-                    "album_cover_64": ts["album"]["images"][2]["url"],
-                    "uri": ts["uri"],
-                }
+    for track_query in tracklist_raw:
+        if "full_name" in track_query:
+            track_query = track_query["full_name"]
+        track_search = (
+            Spotify_API.search(
+                access_token=user.access_token, query=track_query, limit=limit
             )
-        except (IndexError, KeyError):
-            tracklist_missing.append(track)
+            .get("tracks", {})
+            .get("items", [])
+        )
+        if track_search:
+            track_results = {"track_query": track_query, "results": []}
+            for track in track_search:
+                track = formatted_spotify_track(track)
+                track_results.get("results", []).append(track)
+            tracklist_spotify.append(track_results)
+        else:
+            tracklist_missing.append(track_query)
             continue
+
     return Response(
-        {"tracks": tracklist_spotify, "missing": tracklist_missing},
+        {"tracks": tracklist_spotify, "missing_tracks": tracklist_missing},
         status=status.HTTP_200_OK,
     )
 
@@ -193,6 +196,7 @@ def spotify_create_playlist(request):
     user = ut.get_spotify_user(request)
     if not user:
         return unauthorized_response
+
     if not request.data.get("tracks"):
         return bad_request_response("No tracks provided")
 
@@ -215,12 +219,8 @@ def spotify_create_playlist(request):
 
     if "snapshot_id" in response:
         return Response(
-            {"message": "Tracks successful added to playlist"},
+            {"message": "Tracks successfully added to playlist"},
             status=status.HTTP_200_OK,
         )
-    error_details = (
-        response.get("error").get("message")
-        if response.get("error")
-        else "Details not provided"
-    )
+    error_details = response.get("error", {}).get("message", "Details not provided")
     return bad_request_response(error_details)
