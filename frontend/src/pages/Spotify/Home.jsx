@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import spotifyIcon from "../../images/spotify-icon.svg";
+import { useAuth } from "../../utils/AuthContext";
 
 function Home(props) {
+    const { isLoggedIn, user, loginURL } = useAuth();
     return (
         <>
             <div className="welcome-hero">
@@ -14,11 +16,11 @@ function Home(props) {
                     </h3>
                     <h3>Create playlists of your top Spotify listenings.</h3>
                 </div>
-                {props.isSpotifyAuthenticated ? (
+                {isLoggedIn ? (
                     <div className="welcome-user">
-                        Logged in as {props.userName}{" "}
+                        Logged in as {user.userName}{" "}
                         <img
-                            src={props.userIcon}
+                            src={user.userIcon}
                             style={{
                                 borderRadius: "50%",
                                 height: "45px",
@@ -28,12 +30,10 @@ function Home(props) {
                         />
                     </div>
                 ) : (
-                    props.loginURL && (
+                    loginURL && (
                         <button
                             className="login btn-spotify"
-                            onClick={() =>
-                                (window.location = `${props.loginURL}`)
-                            }
+                            onClick={() => (window.location = `${loginURL}`)}
                         >
                             <img src={spotifyIcon} alt="" /> Login
                         </button>

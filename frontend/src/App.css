@@ -212,7 +212,9 @@ form p {
     text-align: center;
 }
 
-.border-comic input, .border-comic select, .border-comic textarea {
+.border-comic input,
+.border-comic select,
+.border-comic textarea {
     margin: 0 auto;
     width: 100%;
     height: 1.5rem;
@@ -245,19 +247,20 @@ form p {
     flex: 1;
 }
 
-.border-comic > input:focus {
+.border-comic>input:focus {
     border: solid #868686;
 }
 
-.border-comic > p {
+.border-comic p {
     font-size: 16px;
     font-weight: bolder;
     margin-bottom: 0.3rem;
 }
 
-.border-comic > label {
+.border-comic>label {
     font-size: 12px;
 }
+
 
 input {
     font-family: var(--primary-font), sans-serif;
@@ -412,7 +415,7 @@ button#submit-playlist {
     -webkit-transition: 0.4s;
 }
 
-.buttonsScroll-container > * {
+.buttonsScroll-container>* {
     background-color: var(--button-color);
     padding: 5px;
     height: 60px;
@@ -420,7 +423,7 @@ button#submit-playlist {
     opacity: 0.5;
 }
 
-.buttonsScroll-container > *:hover {
+.buttonsScroll-container>*:hover {
     padding: 5px;
     height: 60px;
     width: fit-content;
@@ -440,7 +443,7 @@ button#submit-playlist {
     background-color: var(--details-color) !important;
 }
 
-.Track-Checkbox:checked + label::before {
+.Track-Checkbox:checked+label::before {
     border-color: var(--details-color) !important;
     background-color: var(--details-color) !important;
 }
@@ -581,7 +584,7 @@ button#submit-playlist {
     margin: 2rem 0;
 }
 
-.welcome-desc > h3 {
+.welcome-desc>h3 {
     text-align: center;
     font-family: var(--secondary-font);
     font-weight: 400;
