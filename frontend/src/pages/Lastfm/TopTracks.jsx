@@ -42,7 +42,7 @@ export default function TimePeriodChart(props) {
             name: "username",
             label: "Last.fm username",
             type: "text",
-            required: true,
+            validation: { required: true },
         },
         {
             name: "period",
@@ -80,13 +80,13 @@ export default function TimePeriodChart(props) {
             name: "tracksNum",
             label: "Number of tracks",
             type: "number",
-            required: true,
+            validation: { required: true, min: "50", max: "1000" },
         },
         {
             name: "page",
             label: "Page",
             type: "number",
-            required: true,
+            validation: { required: true, min: "1" },
         },
     ];
 

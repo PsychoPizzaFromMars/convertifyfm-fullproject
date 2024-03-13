@@ -46,8 +46,6 @@ export default function TimePeriodChart(props) {
             label: "Last.fm username",
             type: "text",
             validation: {
-                oninvalid: "('Enter User Name Here')",
-                oninput: "setCustomValidity('')",
                 required: true,
             },
         },
@@ -60,7 +58,7 @@ export default function TimePeriodChart(props) {
             name: "tracksNum",
             label: "Number of tracks",
             type: "number",
-            validation: { required: true, min: "5", max: "1000" },
+            validation: { required: true, min: "50", max: "1000" },
         },
     ];
 
