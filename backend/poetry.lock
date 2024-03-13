@@ -35,7 +35,7 @@ tomli = {version = "*", markers = "python_version < \"3.11\""}
 name = "brotli"
 version = "1.0.9"
 description = "Python bindings for the Brotli compression library"
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -283,7 +283,7 @@ dev = ["PyTest", "PyTest (<5)", "PyTest-Cov", "PyTest-Cov (<2.6)", "bump2version
 name = "dj-database-url"
 version = "1.2.0"
 description = "Use Database URLs in your Django Application."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 files = [
@@ -347,42 +347,6 @@ files = [
 Django = ">=3.2"
 
 [[package]]
-name = "django-oauth-toolkit"
-version = "1.5.0"
-description = "OAuth2 Provider for Django"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-oauth-toolkit-1.5.0.tar.gz", hash = "sha256:650e5ef2244d1d8db8f507137e0d1e8b8aad1f4086a4a610526e8851f9a38308"},
-    {file = "django_oauth_toolkit-1.5.0-py3-none-any.whl", hash = "sha256:b2e346a7c1e222774bfb370f21b556b92b408395b4c23914e2d1b241b2e5376a"},
-]
-
-[package.dependencies]
-django = ">=2.2"
-jwcrypto = ">=0.8.0"
-oauthlib = ">=3.1.0"
-requests = ">=2.13.0"
-six = "*"
-
-[[package]]
-name = "django-rest-framework-social-oauth2"
-version = "1.1.0"
-description = "python-social-auth and oauth2 support for django-rest-framework"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-rest-framework-social-oauth2-1.1.0.tar.gz", hash = "sha256:c9a297b636ffd37957c6146280e99ead41e6aca37bcb995e3d52d65eefbca0b7"},
-]
-
-[package.dependencies]
-django-braces = ">=1.11.0"
-django-oauth-toolkit = ">=1.0.0"
-djangorestframework = ">=3.0.1"
-social-auth-app-django = ">=0.1.0"
-
-[[package]]
 name = "djangorestframework"
 version = "3.12.4"
 description = "Web APIs for Django, made easy."
@@ -401,7 +365,7 @@ django = ">=2.2"
 name = "gunicorn"
 version = "20.1.0"
 description = "WSGI HTTP Server for UNIX"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.5"
 files = [
@@ -447,27 +411,10 @@ cryptography = ">=2.3"
 deprecated = "*"
 
 [[package]]
-name = "oauthlib"
-version = "3.1.1"
-description = "A generic, spec-compliant, thorough implementation of the OAuth request-signing logic"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "oauthlib-3.1.1-py2.py3-none-any.whl", hash = "sha256:42bf6354c2ed8c6acb54d971fce6f88193d97297e18602a3a886603f9d7730cc"},
-    {file = "oauthlib-3.1.1.tar.gz", hash = "sha256:8f0215fcc533dd8dd1bee6f4c412d4f0cd7297307d43ac61666389e3bc3198a3"},
-]
-
-[package.extras]
-rsa = ["cryptography (>=3.0.0,<4)"]
-signals = ["blinker (>=1.4.0)"]
-signedtoken = ["cryptography (>=3.0.0,<4)", "pyjwt (>=2.0.0,<3)"]
-
-[[package]]
 name = "psycopg2-binary"
 version = "2.9.5"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
@@ -599,25 +546,6 @@ files = [
 ]
 
 [[package]]
-name = "python3-openid"
-version = "3.2.0"
-description = "OpenID support for modern servers and consumers."
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "python3-openid-3.2.0.tar.gz", hash = "sha256:33fbf6928f401e0b790151ed2b5290b02545e8775f982485205a066f874aaeaf"},
-    {file = "python3_openid-3.2.0-py3-none-any.whl", hash = "sha256:6626f771e0417486701e0b4daff762e7212e820ca5b29fcc0d05f6f8736dfa6b"},
-]
-
-[package.dependencies]
-defusedxml = "*"
-
-[package.extras]
-mysql = ["mysql-connector-python"]
-postgresql = ["psycopg2"]
-
-[[package]]
 name = "pytz"
 version = "2021.1"
 description = "World timezone definitions, modern and historical"
@@ -652,29 +580,10 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
-name = "requests-oauthlib"
-version = "1.3.0"
-description = "OAuthlib authentication support for Requests."
-category = "main"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-files = [
-    {file = "requests-oauthlib-1.3.0.tar.gz", hash = "sha256:b4261601a71fd721a8bd6d7aa1cc1d6a8a93b4a9f5e96626f8e4d91e8beeaa6a"},
-    {file = "requests_oauthlib-1.3.0-py2.py3-none-any.whl", hash = "sha256:7f71572defaecd16372f9006f33c2ec8c077c3cfa6f5911a9a90202beb513f3d"},
-]
-
-[package.dependencies]
-oauthlib = ">=3.0.0"
-requests = ">=2.0.0"
-
-[package.extras]
-rsa = ["oauthlib[signedtoken] (>=3.0.0)"]
-
-[[package]]
 name = "setuptools"
 version = "65.6.3"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -698,49 +607,6 @@ files = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
-
-[[package]]
-name = "social-auth-app-django"
-version = "5.0.0"
-description = "Python Social Authentication, Django integration."
-category = "main"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "social-auth-app-django-5.0.0.tar.gz", hash = "sha256:b6e3132ce087cdd6e1707aeb1b588be41d318408fcf6395435da0bc6fe9a9795"},
-    {file = "social_auth_app_django-5.0.0-py3-none-any.whl", hash = "sha256:52241a25445a010ab1c108bafff21fc5522d5c8cd0d48a92c39c7371824b065d"},
-]
-
-[package.dependencies]
-social-auth-core = ">=4.1.0"
-
-[[package]]
-name = "social-auth-core"
-version = "4.1.0"
-description = "Python social authentication made simple."
-category = "main"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "social-auth-core-4.1.0.tar.gz", hash = "sha256:5ab43b3b15dce5f059db69cc3082c216574739f0edbc98629c8c6e8769c67eb4"},
-    {file = "social_auth_core-4.1.0-py3-none-any.whl", hash = "sha256:983b53167ac56e7ba4909db555602a6e7a98c97ca47183bb222eb85ba627bf2b"},
-]
-
-[package.dependencies]
-cryptography = ">=1.4"
-defusedxml = ">=0.5.0rc1"
-oauthlib = ">=1.0.3"
-PyJWT = ">=2.0.0"
-python3-openid = ">=3.0.10"
-requests = ">=2.9.1"
-requests-oauthlib = ">=0.6.1"
-
-[package.extras]
-all = ["cryptography (>=2.1.1)", "python-jose (>=3.0.0)", "python3-saml (>=1.2.1)"]
-allpy3 = ["cryptography (>=2.1.1)", "python-jose (>=3.0.0)", "python3-saml (>=1.2.1)"]
-azuread = ["cryptography (>=2.1.1)"]
-openidconnect = ["python-jose (>=3.0.0)"]
-saml = ["python3-saml (>=1.2.1)"]
 
 [[package]]
 name = "sqlparse"
@@ -787,7 +653,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 name = "whitenoise"
 version = "6.2.0"
 description = "Radically simplified static file serving for WSGI applications"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -815,4 +681,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.8"
-content-hash = "0e8e691e786a857f0a404b5aee98024908b7ccc57faa3d90194050b91602f9c8"
+content-hash = "858472eb8ed8aad41d648334c689aaf0994e07ee5a8d5218a6a9929d560be13f"
